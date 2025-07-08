@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html ng-app="SApp">
+<head>
+    <title>Shopping List</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #shopping-list {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            margin-right: 0;
+        }
+
+        button[type="submit"],
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover,
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        li button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: transparent;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        li:hover button {
+            color: #999;
+        }
+
+        .total-price {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .cart-button {
+            display: block;
+            margin: 0 auto;
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .cart-button:hover {
+            background-color: #005f7f;
+        }
+    </style>
+</head>
+<body>
+
+<div id="shopping-list" ng-controller="SC">
+    <h2>Shopping List</h2>
+
+    <form ng-submit="addItem()">
+        <input type="text" ng-model="newItem.name" placeholder="Add item" required>
+        <input type="number" ng-model="newItem.quantity" placeholder="Quantity">
+        <button type="submit">Add</button>
+    </form>
+
+    <ul>
+        <li ng-repeat="item in shoppingList">
+            {{ item.name }} ({{ item.quantity }}) - Rs{{ item.price }}
+            <button ng-click="removeItem($index)">X</button>
+        </li>
+    </ul>
+
+    <p class="total-price">Total Price: Rs{{ getTotalPrice() }}</p>
+
+    <input type="text" ng-model="userName" placeholder="Enter your name" required>
+    <input type="text" ng-model="email" placeholder="Enter your email" required>
+
+    <button class="cart-button" ng-click="addToCart()">Add to Cart</button>
+
+</div>
+
+<script>
+    var app = angular.module('SApp', []);
+
+    app.controller('SC', function ($scope) {
+        $scope.shoppingList = [];
+        $scope.userName = "";
+        $scope.email = "";
+
+        var defaultPrices = {
+            "basmati rice": 150,
+            "jasmine rice": 400,
+            "red rice": 170,
+            "brown rice": 150,
+            "black rice": 300,
+            "sona masuri rice": 75,
+            "bamboo rice": 300,
+            "olive oil": 1500,
+            "coconut oil": 300,
+            "ground oil": 200,
+            "hemp seed oil": 500,
+            "flaxseed oil": 500,
+            "sesame seed oil": 600,
+            "mustard oil": 140,
+            "moong dal": 100,
+            "masoor dal": 1500,
+            "urad dal": 150,
+            "chana dal": 60,
+            "rajma": 120,
+            "chawli": 250,
+            "kala chana": 100,
+            "atta": 60,
+            "rice flour": 40,
+            "maidha": 50,
+            "basan": 90,
+            "millet flour": 120,
+            "corn flour": 100,
+            "bajra": 100,
+            "barley": 150,
+            "jowar": 80,
+            "ragi": 50,
+            "oats": 150,
+            "wheat": 100,
+            "quinoa": 300,
+            "coriander seeds": 165,
+            "cinnamon": 270,
+            "cumin": 240,
+            "cardamom": 3400,
+            "clove": 800,
+            "tumeric": 300,
+            "black pepper": 900,
+            "fenugreek": 300,
+            "red chilli": 500,
+        };
+
+        $scope.addItem = function () {
+            if ($scope.newItem && $scope.newItem.name) {
+                var itemName = $scope.newItem.name.toLowerCase();
+                var price = defaultPrices[itemName] || 0;
+                var existingItem = $scope.shoppingList.find(function (item) {
+                    return item.name.toLowerCase() === itemName;
+                });
+                if (existingItem) {
+                    existingItem.quantity += ($scope.newItem.quantity || 1);
+                } else {
+                    $scope.shoppingList.push({
+                        name: $scope.newItem.name,
+                        quantity: $scope.newItem.quantity || 1,
+                        price: parseFloat(price)
+                    });
+                }
+                $scope.newItem = {};
+            }
+        };
+
+        $scope.removeItem = function (index) {
+            $scope.shoppingList.splice(index, 1);
+        };
+
+        $scope.getTotalPrice = function () {
+            var totalPrice = 0;
+            $scope.shoppingList.forEach(function (item) {
+                totalPrice += item.price * item.quantity;
+            });
+            return totalPrice.toFixed(2);
+        };
+
+        $scope.addToCart = function () {
+            $scope.shoppingList.forEach(item => {
+                var data = {
+                    userName: $scope.userName,
+                    email: $scope.email,
+                    item: item.name,
+                    quantity: item.quantity
+                };
+
+                axios.post('http://localhost:4000/food', data)
+                    .then(function (response) {
+                        console.log('Data sent to the server successfully!', response);
+                    })
+                    .catch(function (error) {
+                        console.error('Failed to send data to the server.', error);
+                    });
+            });
+        };
+    });
+</script>
+
+</body>
+</html>

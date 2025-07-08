@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Farmers Market</title>
+<style>
+.image-surround {
+  display: inline-block;
+  border: 2px solid #ccc; 
+  border-radius: 5px;
+}
+
+h1 {
+  display: inline-block;
+  margin-top: 0;
+  margin-bottom: 0px;
+}
+
+body {
+  background-color: #89CFF0; 
+}
+
+div.header {
+  text-align: center;
+  background-color: #B8E2F2;
+  height: 200px;
+  width: 100%;
+}
+
+.marquee {
+  background-color:#77C3EC;
+  margin-right: 20px;
+}
+
+img {
+  width: 10%;
+  margin-right: 10px;   
+  margin-bottom: 10px; 
+  float: left; 
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.menu a {
+  display: inline-block;
+  padding: 10px;             
+  margin: 5px; 
+  text-decoration: none;
+  color: #333;            
+  border: 2px solid #ccc; 
+  border-radius: 5px; 
+background-color: #A0CCE0;
+  transition: background-color 0.3s;
+}
+
+.menu a:hover {
+  background-color: #e0e0e0;
+}
+
+h1.menu-title {
+  text-align: center; 
+  color: lightblue;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <marquee class="marquee" width="75%" direction="right" height="15px" align="center">
+    <b>From Farm to Table: Taste the Freshness!</b>
+  </marquee>
+  
+  <img class="image-surround" src="logo.png" alt="logo" />
+  <img class="image-surround" src="organ.jpg" alt="logo" style="float:right"/> 
+  <h1>Farmers Market</h1>
+  <div class="menu">
+    <a href="green.html" target="middle">HOME</a> 
+    <a href="rice.html" target="middle">Rice</a>
+    <a href="oil.html" target="middle">Oils</a>
+    <a href="pulses.html" target="middle">Pulses</a>
+    <a href="flours.html" target="middle">Flours</a>
+    <a href="grains.html" target="middle">Grains</a>
+    <a href="spices.html" target="middle">Spices</a>
+  </div>
+</div>
+
+<h1 class="menu-title">Menu</h1>
+</body>
+</html>
